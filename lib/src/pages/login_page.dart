@@ -1,6 +1,5 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
+import 'package:login_flutter_bloc/src/bloc/provider.dart';
 
 class LoginPage extends StatelessWidget {
   @override
@@ -80,6 +79,7 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget _loginForm(BuildContext context) {
+    final bloc = Provider.of(context);
     final media = MediaQuery.of(context).size;
 
     return SingleChildScrollView(
@@ -109,11 +109,11 @@ class LoginPage extends StatelessWidget {
                   "ingreso",
                   style: TextStyle(fontSize: 20.0),
                 ),
-                _crearEmail(),
+                _crearEmail(bloc),
                 SizedBox(
                   height: 0.5,
                 ),
-                _crearPassword(),
+                _crearPassword(bloc),
                 SizedBox(
                   height: 20.0,
                 ),
@@ -133,40 +133,57 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Widget _crearEmail() {
-    return Container(
-      padding: EdgeInsets.only(left: 10.0, right: 10.0),
-      child: TextFormField(
-        keyboardType: TextInputType.emailAddress,
-        decoration: InputDecoration(
-          labelStyle: TextStyle(color: Colors.green),
-          labelText: "Email",
-          hintText: "ejemplo@gmail.com",
-          icon: Icon(
-            Icons.email,
-            color: Colors.green,
+  Widget _crearEmail(LoginBloc bloc) {
+    return StreamBuilder(
+      stream: bloc.emailStream,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        return Container(
+          padding: EdgeInsets.only(left: 10.0, right: 10.0),
+          child: TextFormField(
+            keyboardType: TextInputType.emailAddress,
+            decoration: InputDecoration(
+              labelStyle: TextStyle(color: Colors.green),
+              labelText: "Email",
+              hintText: "ejemplo@gmail.com",
+              counterText: snapshot.data,
+              errorText: snapshot.error,
+              icon: Icon(
+                Icons.email,
+                color: Colors.green,
+              ),
+            ),
+            onChanged: bloc.changeEmail,
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
-  Widget _crearPassword() {
-    return Container(
-      padding: EdgeInsets.only(left: 10.0, right: 10.0),
-      child: TextFormField(
-        obscureText: true,
-        keyboardType: TextInputType.visiblePassword,
-        decoration: InputDecoration(
-          labelStyle: TextStyle(color: Colors.green),
-          labelText: "Password",
-          //  hintText: "ejemplo@gmail.com",
-          icon: Icon(
-            Icons.lock,
-            color: Colors.green,
+  Widget _crearPassword(LoginBloc bloc) {
+    return StreamBuilder(
+      stream: bloc.passwordStrem,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        return Container(
+          padding: EdgeInsets.only(left: 10.0, right: 10.0),
+          child: TextFormField(
+            obscureText: true,
+            keyboardType: TextInputType.visiblePassword,
+            decoration: InputDecoration(
+              labelStyle: TextStyle(color: Colors.green),
+              labelText: "Password",
+              counterText: snapshot.data,
+              errorText: snapshot.error,
+
+              //  hintText: "ejemplo@gmail.com",
+              icon: Icon(
+                Icons.lock,
+                color: Colors.green,
+              ),
+            ),
+            onChanged: bloc.changePassword,
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 

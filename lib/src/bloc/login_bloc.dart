@@ -1,16 +1,14 @@
 import 'dart:async';
+import 'package:login_flutter_bloc/src/bloc/validators.dart';
 
-import 'package:flutter/material.dart';
-import 'dart:async';
-
-class LoginBloc {
+class LoginBloc  with Validators {
   final _emailController = StreamController<String>.broadcast();
   final _passwordController = StreamController<String>.broadcast();
 
   //recuperar los datos del string
 
-  Stream<String> get emailStream => _emailController.stream;
-  Stream<String> get passwordStrem => _passwordController.stream;
+  Stream<String> get emailStream => _emailController.stream.transform(validarEmail);
+  Stream<String> get passwordStrem => _passwordController.stream.transform(validarPassword);
 
   //insertar valores al stream
   Function(String) get changeEmail => _emailController.sink.add;
